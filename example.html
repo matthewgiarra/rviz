@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rviz git repository visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        h2::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 8px;
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
+        }
+        h2.expanded::before {
+            transform: rotate(90deg);
+        }
+        .readme, .tree, .commit-list, .uncommitted {
+            margin: 20px 0;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {
+            display: none;
+        }
+        .tree ul {
+            padding-left: 20px;
+            list-style: none;
+        }
+        .tree li {
+            position: relative;
+            margin: 10px 0;
+        }
+        .tree .dir {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .tree .dir:hover {
+            background-color: #dfe6e9;
+        }
+        .tree .dir::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+        .tree .expanded > .dir::before {
+            transform: rotate(90deg);
+        }
+        .tree .collapsed > ul {
+            display: none;
+        }
+        .tree .description {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-left: 15px;
+            font-size: 0.9em;
+        }
+        .tree .md-link {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .tree .md-link:hover {
+            text-decoration: underline;
+        }
+        .commit {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .uncommitted {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>rviz git repository visualizer</h1>
+
+    <h2>README</h2>
+    <div class="readme collapsed">
+<h1 id="rviz---repository-visualization-tool">rviz - Repository
+Visualization Tool</h1>
+<p>rviz is a Python script that generates an HTML visualization of a Git
+repository’s structure, commit history, and uncommitted changes. It
+supports rendering Markdown files as clickable links and embeds the
+root-level <code>README.md</code> in an expandable section.</p>
+<h1 id="features">Features</h1>
+<ul>
+<li><strong>Expandable Sections</strong>: View the root
+<code>README.md</code>, file hierarchy, commit history, and uncommitted
+changes in collapsible sections with spinning triangle indicators.</li>
+<li><strong>File Hierarchy</strong>: Displays a tree of the repository’s
+files and directories, with clickable Markdown (<code>.md</code>) files
+opening in new tabs as rendered HTML.</li>
+<li><strong>Commit History</strong>: Lists commits in the format
+<code>&lt;date&gt;: &lt;message&gt; (&lt;author&gt;) - &lt;hash&gt;</code>.</li>
+<li><strong>Uncommitted Changes</strong>: Shows
+<code>git status --porcelain</code> output in red.</li>
+<li><strong>Customizable Title</strong>: Set via command-line, config
+file, or defaults to the repository name.</li>
+<li><strong>Markdown Rendering</strong>: All <code>.md</code> files in
+the hierarchy are converted to HTML and linked; the root
+<code>README.md</code> is embedded directly.</li>
+</ul>
+<h1 id="usage">Usage</h1>
+<p>Run <code>rviz.py</code> (or <code>rviz_fallback.py</code> for
+environments without Pandoc):</p>
+<pre><code>python3 rviz.py [options]</code></pre>
+<h1 id="command-line-options">Command-Line Options</h1>
+<ul>
+<li><code>-t, --title &lt;title&gt;</code>: Set the repository title
+(use single quotes, e.g., <code>'My Title'</code>, if double quotes
+cause shell issues).</li>
+<li><code>-d, --dir &lt;path&gt;</code>: Specify the target repository
+directory (overrides config <code>repo_dir</code>).</li>
+<li><code>-o, --output &lt;filename&gt;</code>: Specify the output HTML
+file name (overrides config <code>output_file</code>).</li>
+<li><code>-f, --file, -c, --config &lt;path&gt;</code>: Specify a custom
+config file path (overrides
+<code>rviz.json</code>/<code>rviz.config</code> in target dir and
+default <code>rviz.json</code>).</li>
+</ul>
+<h1 id="config-file-precedence">Config File Precedence</h1>
+<p>rviz supports configuration via JSON files, with the following
+precedence: 1. Command-line <code>-f</code>/<code>-c</code> specified
+file. 2. <code>rviz.config</code> in the target repository’s root (if
+both exist, prioritizes over <code>rviz.json</code> with a warning). 3.
+<code>rviz.json</code> in the target repository’s root. 4.
+<code>rviz.json</code> in the script’s directory (e.g.,
+<code>repo_viewer/rviz.json</code>).</p>
+<p>Example <code>rviz.json</code> or <code>rviz.config</code>:</p>
+<pre><code>{
+    &quot;repo_dir&quot;: &quot;/path/to/repo&quot;,
+    &quot;output_file&quot;: &quot;rviz.html&quot;,
+    &quot;title&quot;: &quot;My Repository&quot;
+}</code></pre>
+<h1 id="config-fields">Config Fields</h1>
+<ul>
+<li><code>repo_dir</code>: Target repository path (default: current
+working directory).</li>
+<li><code>output_file</code>: Output HTML file name (default:
+<code>rviz.html</code>).</li>
+<li><code>title</code>: Repository title (default: basename of
+<code>repo_dir</code>).</li>
+</ul>
+<p>Command-line options (<code>-d</code>, <code>-o</code>,
+<code>-t</code>) override these fields.</p>
+<h1 id="directory-descriptions">Directory Descriptions</h1>
+<p>If a <code>contents.json</code> file exists in a directory, its
+<code>description</code> field is displayed in italics next to the
+directory name in the file hierarchy:</p>
+<pre><code>{
+    &quot;description&quot;: &quot;This is a subdirectory&quot;
+}</code></pre>
+<h1 id="requirements">Requirements</h1>
+<ul>
+<li><strong>rviz.py</strong>: Requires Git and Pandoc installed.</li>
+<li><strong>rviz_fallback.py</strong>: Requires only Git (falls back to
+plain text for Markdown files).</li>
+</ul>
+<h1 id="installation">Installation</h1>
+<ol type="1">
+<li><p>Clone the repository:</p>
+<pre><code>git clone &lt;repo-url&gt;
+cd repo_viewer</code></pre></li>
+<li><p>Ensure dependencies are installed:</p>
+<ul>
+<li>Git: <code>git --version</code></li>
+<li>Pandoc (for <code>rviz.py</code>):
+<code>pandoc --version</code></li>
+</ul></li>
+</ol>
+<h1 id="example">Example</h1>
+<p>To visualize a repo at <code>/path/to/repo</code> with a custom title
+and output file:</p>
+<pre><code>python3 rviz.py -d /path/to/repo -t &#39;My Project&#39; -o output.html</code></pre>
+<p>The output file (e.g., <code>/path/to/repo/output.html</code>) will
+open in your default browser.</p>
+<h1 id="notes">Notes</h1>
+<ul>
+<li>Use single quotes for command-line args with spaces or special
+characters (e.g., <code>-t 'My Title!'</code>).</li>
+<li>If both <code>rviz.json</code> and <code>rviz.config</code> exist in
+the target dir, a warning is printed, and <code>rviz.config</code> is
+used.</li>
+</ul>
+
+    </div>
+
+    <h2>File Hierarchy</h2>
+    <div class="tree collapsed">
+<ul><li>README.md</li><li>rviz.json</li><li>rviz.py</li></ul>
+    </div>
+
+    <h2>Commit History</h2>
+    <div class="commit-list collapsed">
+<div class="commit">2025-04-05: Updated README.md (Matthew Giarra) - 473aae3</div><div class="commit">2025-04-05: Added warning if both rviz.json and rviz.config are in the target dir; changed config.json to rviz.json in the rviz repo (Matthew Giarra) - f71f69a</div><div class="commit">2025-04-05: Added searching for rviz.json in the target repo. (Matthew Giarra) - 73a8157</div><div class="commit">2025-04-05: Added command argument to specify path to config file (Matthew Giarra) - e5ac6a9</div><div class="commit">2025-04-05: Added specifying repo title via config.json, command argument, or (default) repo name. (Matthew Giarra) - 7b0991a</div><div class="commit">2025-04-05: Expandable root README and linked subdir .md files (Matthew Giarra) - 2f02d1a</div><div class="commit">2025-04-05: Big spinny triangles (Matthew Giarra) - 3360584</div><div class="commit">2025-04-05: Initial commit. (Matthew Giarra) - c0e1cec</div>
+    </div>
+
+    <h2>Uncommitted Changes</h2>
+    <div class="uncommitted collapsed">
+<div>?? example.html</div><div>?? rviz_fallback.py</div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tree .dir').forEach(dir => {
+            dir.addEventListener('click', (e) => {
+                const li = dir.parentElement;
+                li.classList.toggle('expanded');
+                li.classList.toggle('collapsed');
+                e.stopPropagation();
+            });
+        });
+        document.querySelectorAll('.tree li').forEach(li => {
+            if (li.querySelector('ul')) {
+                li.classList.add('collapsed');
+            }
+        });
+        document.querySelectorAll('h2').forEach(h2 => {
+            h2.addEventListener('click', () => {
+                const section = h2.nextElementSibling;
+                section.classList.toggle('collapsed');
+                h2.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+</html>
