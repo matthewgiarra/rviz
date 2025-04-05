@@ -16,13 +16,10 @@ default_config_file = "config.json"
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Generate a repository viewer HTML page.")
 parser.add_argument("-t", "--title", help="Specify the repository title (use single quotes, e.g., 'My Title', if double quotes cause shell issues)")
-parser.add_argument("-d", "--dir", help="Specify the repository directory (overrides config.json 'repo_dir')")
-parser.add_argument("-o", "--output", help="Specify the output HTML file name (overrides config.json 'output_file')")
-parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config.json (overrides default config.json in script directory)")
+parser.add_argument("-d", "--dir", help="Specify the repository directory (overrides config 'repo_dir')")
+parser.add_argument("-o", "--output", help="Specify the output HTML file name (overrides config 'output_file')")
+parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config.json (overrides rviz.json in repo_dir and default config.json)")
 args = parser.parse_args()
-
-# Determine config file path
-config_file = args.file or default_config_file  # Precedence: command-line > default
 
 # Function to load config from JSON
 def load_config(config_path):
@@ -44,16 +41,30 @@ def load_config(config_path):
         print(f"Error loading '{config_path}': {e}. Using defaults: {default_config}")
         return default_config
 
-# Load configuration
+# Determine initial repo_dir for rviz.json check (before finalizing it)
+initial_repo_dir = args.dir or os.getcwd()  # Use command-line -d or current dir as starting point
+rviz_config_path = os.path.join(initial_repo_dir, "rviz.json")
+
+# Determine which config file to use
+if args.file:  # Command-line -f/-c takes highest precedence
+    config_file = args.file
+elif os.path.exists(rviz_config_path):  # Then rviz.json in target dir
+    config_file = rviz_config_path
+else:  # Fallback to default config.json in script dir
+    config_file = default_config_file
+
+# Load configuration from chosen file
 config = load_config(config_file)
-repo_dir = args.dir or config["repo_dir"]  # Precedence: command-line > config > default
+
+# Set repo_dir once, respecting precedence: command-line > config > default
+repo_dir = args.dir or config["repo_dir"]
 output_file = os.path.join(repo_dir, args.output or config["output_file"])  # Precedence: command-line > config > default
 
 # Determine repository title
-repo_name = os.path.basename(repo_dir)  # Default: last part of repo_dir path
+repo_name = os.path.basename(repo_dir)
 repo_title = args.title or config.get("title", repo_name)  # Precedence: args > config > default
 
-# Change to repo directory
+# Change to repo directory (only once)
 try:
     os.chdir(repo_dir)
 except Exception as e:
