@@ -11,21 +11,21 @@ is_windows = platform.system() == "Windows"
 is_mac = platform.system() == "Darwin"
 
 # Default config file name in the script's directory
-default_config_file = "config.json"
+default_config_file = "rviz.json"
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Generate a repository viewer HTML page.")
 parser.add_argument("-t", "--title", help="Specify the repository title (use single quotes, e.g., 'My Title', if double quotes cause shell issues)")
 parser.add_argument("-d", "--dir", help="Specify the repository directory (overrides config 'repo_dir')")
 parser.add_argument("-o", "--output", help="Specify the output HTML file name (overrides config 'output_file')")
-parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config.json (overrides rviz.json in repo_dir and default config.json)")
+parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config file (overrides rviz.json/rviz.config in repo_dir and default rviz.json)")
 args = parser.parse_args()
 
 # Function to load config from JSON
 def load_config(config_path):
     default_config = {
         "repo_dir": os.getcwd(),
-        "output_file": "repo_view.html"
+        "output_file": "rviz.html"  # Changed default from repo_view.html to rviz.html
     }
     if not os.path.exists(config_path):
         print(f"Config file '{config_path}' not found. Using defaults: {default_config}")
@@ -41,16 +41,21 @@ def load_config(config_path):
         print(f"Error loading '{config_path}': {e}. Using defaults: {default_config}")
         return default_config
 
-# Determine initial repo_dir for rviz.json check (before finalizing it)
+# Determine initial repo_dir for rviz config check
 initial_repo_dir = args.dir or os.getcwd()  # Use command-line -d or current dir as starting point
-rviz_config_path = os.path.join(initial_repo_dir, "rviz.json")
+rviz_json_path = os.path.join(initial_repo_dir, "rviz.json")
+rviz_config_path = os.path.join(initial_repo_dir, "rviz.config")
 
 # Determine which config file to use
 if args.file:  # Command-line -f/-c takes highest precedence
     config_file = args.file
-elif os.path.exists(rviz_config_path):  # Then rviz.json in target dir
+elif os.path.exists(rviz_config_path):  # Then rviz.config in target dir
     config_file = rviz_config_path
-else:  # Fallback to default config.json in script dir
+    if os.path.exists(rviz_json_path):
+        print(f"Warning: Both 'rviz.json' and 'rviz.config' found in '{initial_repo_dir}'. Prioritizing 'rviz.config'.")
+elif os.path.exists(rviz_json_path):  # Then rviz.json in target dir
+    config_file = rviz_json_path
+else:  # Fallback to default rviz.json in script dir
     config_file = default_config_file
 
 # Load configuration from chosen file
