@@ -5,6 +5,7 @@ import json
 import webbrowser
 import argparse
 from html import escape
+from datetime import datetime  # Added for timestamp
 
 # Detect operating system
 is_windows = platform.system() == "Windows"
@@ -25,7 +26,7 @@ args = parser.parse_args()
 def load_config(config_path):
     default_config = {
         "repo_dir": os.getcwd(),
-        "output_file": "rviz.html"  # Changed default from repo_view.html to rviz.html
+        "output_file": "rviz.html"
     }
     if not os.path.exists(config_path):
         print(f"Config file '{config_path}' not found. Using defaults: {default_config}")
@@ -42,20 +43,20 @@ def load_config(config_path):
         return default_config
 
 # Determine initial repo_dir for rviz config check
-initial_repo_dir = args.dir or os.getcwd()  # Use command-line -d or current dir as starting point
+initial_repo_dir = args.dir or os.getcwd()
 rviz_json_path = os.path.join(initial_repo_dir, "rviz.json")
 rviz_config_path = os.path.join(initial_repo_dir, "rviz.config")
 
 # Determine which config file to use
-if args.file:  # Command-line -f/-c takes highest precedence
+if args.file:
     config_file = args.file
-elif os.path.exists(rviz_config_path):  # Then rviz.config in target dir
+elif os.path.exists(rviz_config_path):
     config_file = rviz_config_path
     if os.path.exists(rviz_json_path):
         print(f"Warning: Both 'rviz.json' and 'rviz.config' found in '{initial_repo_dir}'. Prioritizing 'rviz.config'.")
-elif os.path.exists(rviz_json_path):  # Then rviz.json in target dir
+elif os.path.exists(rviz_json_path):
     config_file = rviz_json_path
-else:  # Fallback to default rviz.json in script dir
+else:
     config_file = default_config_file
 
 # Load configuration from chosen file
@@ -63,11 +64,14 @@ config = load_config(config_file)
 
 # Set repo_dir once, respecting precedence: command-line > config > default
 repo_dir = args.dir or config["repo_dir"]
-output_file = os.path.join(repo_dir, args.output or config["output_file"])  # Precedence: command-line > config > default
+output_file = os.path.join(repo_dir, args.output or config["output_file"])
 
 # Determine repository title
 repo_name = os.path.basename(repo_dir)
-repo_title = args.title or config.get("title", repo_name)  # Precedence: args > config > default
+repo_title = args.title or config.get("title", repo_name)
+
+# Get current date and time
+creation_time = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")  # e.g., "April 05, 2025 09:30:00 AM"
 
 # Change to repo directory (only once)
 try:
@@ -107,7 +111,7 @@ for line in tree_data:
         for d in dirs[:-1]:
             current = current.setdefault(d, {})
         current[dirs[-1]] = None
-        if dirs[-1].lower() == "readme.md" and len(dirs) == 1:  # Root-level README.md
+        if dirs[-1].lower() == "readme.md" and len(dirs) == 1:
             root_readme = path
         elif dirs[-1].lower().endswith(".md"):
             md_files[path] = f"{path.replace('/', '_')}.html"
@@ -157,7 +161,13 @@ html = f"""
         h1 {{
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }}
+        .timestamp {{
+            font-size: 0.9em;
+            color: #7f8c8d;  /* Less-emphasized gray */
+            margin-top: 0;
         }}
         h2 {{
             color: #34495e;
@@ -242,6 +252,7 @@ html = f"""
 </head>
 <body>
     <h1>{escape(repo_title)}</h1>
+    <p class="timestamp">Generated on {creation_time}</p>
 """
 
 # Add README section if root README exists

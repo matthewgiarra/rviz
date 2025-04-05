@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>rviz git repository visualizer</title>
+    <title>rviz</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +17,13 @@
         h1 {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+        .timestamp {
+            font-size: 0.9em;
+            color: #7f8c8d;  /* Less-emphasized gray */
+            margin-top: 0;
         }
         h2 {
             color: #34495e;
@@ -101,14 +107,15 @@
     </style>
 </head>
 <body>
-    <h1>rviz git repository visualizer</h1>
+    <h1>rviz</h1>
+    <p class="timestamp">Generated on April 05, 2025 02:49:36 PM</p>
 
     <h2>README</h2>
     <div class="readme collapsed">
 <h1 id="rviz---repository-visualization-tool">rviz - Repository
 Visualization Tool</h1>
-<p>rrrviz is a Python script that generates an HTML visualization of a
-Git repository’s structure, commit history, and uncommitted changes. It
+<p>rviz is a Python script that generates an HTML visualization of a Git
+repository’s structure, commit history, and uncommitted changes. It
 supports rendering Markdown files as clickable links and embeds the
 root-level <code>README.md</code> in an expandable section.</p>
 <p><a
@@ -157,7 +164,7 @@ file. 2. <code>rviz.config</code> in the target repository’s root (if
 both exist, prioritizes over <code>rviz.json</code> with a warning). 3.
 <code>rviz.json</code> in the target repository’s root. 4.
 <code>rviz.json</code> in the script’s directory (e.g.,
-<code>repo_viewer/rviz.json</code>).</p>
+<code>rviz/rviz.json</code>).</p>
 <p>Example <code>rviz.json</code> or <code>rviz.config</code>:</p>
 <pre><code>{
     &quot;repo_dir&quot;: &quot;/path/to/repo&quot;,
@@ -224,7 +231,7 @@ used.</li>
 
     <h2>Commit History</h2>
     <div class="commit-list collapsed">
-<div class="commit">2025-04-05: Added link to preview of example.html (Matthew Giarra) - 89b016a</div><div class="commit">2025-04-05: Added example.html (Matthew Giarra) - 9198814</div><div class="commit">2025-04-05: Updated README.md (Matthew Giarra) - 473aae3</div><div class="commit">2025-04-05: Added warning if both rviz.json and rviz.config are in the target dir; changed config.json to rviz.json in the rviz repo (Matthew Giarra) - f71f69a</div><div class="commit">2025-04-05: Added searching for rviz.json in the target repo. (Matthew Giarra) - 73a8157</div><div class="commit">2025-04-05: Added command argument to specify path to config file (Matthew Giarra) - e5ac6a9</div><div class="commit">2025-04-05: Added specifying repo title via config.json, command argument, or (default) repo name. (Matthew Giarra) - 7b0991a</div><div class="commit">2025-04-05: Expandable root README and linked subdir .md files (Matthew Giarra) - 2f02d1a</div><div class="commit">2025-04-05: Big spinny triangles (Matthew Giarra) - 3360584</div><div class="commit">2025-04-05: Initial commit. (Matthew Giarra) - c0e1cec</div>
+<div class="commit">2025-04-05: Added timestamp to html file, closes #5 (Matthew Giarra) - 1e0d413</div><div class="commit">2025-04-05: Update README.md (Matthew Giarra) - 4751e04</div><div class="commit">2025-04-05: Update README.md (Matthew Giarra) - 80d344c</div><div class="commit">2025-04-05: Updated example.html (Matthew Giarra) - 527f880</div><div class="commit">2025-04-05: Added link to preview of example.html (Matthew Giarra) - 89b016a</div><div class="commit">2025-04-05: Added example.html (Matthew Giarra) - 9198814</div><div class="commit">2025-04-05: Updated README.md (Matthew Giarra) - 473aae3</div><div class="commit">2025-04-05: Added warning if both rviz.json and rviz.config are in the target dir; changed config.json to rviz.json in the rviz repo (Matthew Giarra) - f71f69a</div><div class="commit">2025-04-05: Added searching for rviz.json in the target repo. (Matthew Giarra) - 73a8157</div><div class="commit">2025-04-05: Added command argument to specify path to config file (Matthew Giarra) - e5ac6a9</div><div class="commit">2025-04-05: Added specifying repo title via config.json, command argument, or (default) repo name. (Matthew Giarra) - 7b0991a</div><div class="commit">2025-04-05: Expandable root README and linked subdir .md files (Matthew Giarra) - 2f02d1a</div><div class="commit">2025-04-05: Big spinny triangles (Matthew Giarra) - 3360584</div><div class="commit">2025-04-05: Initial commit. (Matthew Giarra) - c0e1cec</div>
     </div>
 
     <h2>Uncommitted Changes</h2>
