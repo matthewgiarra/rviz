@@ -34,7 +34,7 @@ rviz supports configuration via JSON files, with the following precedence:
 1. Command-line `-f`/`-c` specified file.
 2. `rviz.config` in the target repository’s root (if both exist, prioritizes over `rviz.json` with a warning).
 3. `rviz.json` in the target repository’s root.
-4. `rviz.json` in the script’s directory (e.g., `repo_viewer/rviz.json`).
+4. `rviz.json` in the script’s directory (e.g., `rviz/rviz.json`).
 
 Example `rviz.json` or `rviz.config`:
 ```
