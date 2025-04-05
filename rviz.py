@@ -61,10 +61,11 @@ tree_data = run_cmd(["git", "ls-tree", "-r", "HEAD"])
 commit_history = run_cmd(["git", "log", "--pretty=format:%h|%an|%ad|%s", "--date=short"])
 status_data = run_cmd(["git", "status", "--porcelain"])
 
-# Build file tree and collect directory descriptions
+# Build file tree and collect directory descriptions and Markdown files
 file_tree = {}
-readme_files = []
+md_files = {}
 dir_descriptions = {}
+root_readme = None
 for line in tree_data:
     parts = line.split()
     if len(parts) >= 4:
@@ -74,8 +75,10 @@ for line in tree_data:
         for d in dirs[:-1]:
             current = current.setdefault(d, {})
         current[dirs[-1]] = None
-        if dirs[-1].lower() == "readme.md":
-            readme_files.append(path)
+        if dirs[-1].lower() == "readme.md" and len(dirs) == 1:  # Root-level README.md
+            root_readme = path
+        elif dirs[-1].lower().endswith(".md"):
+            md_files[path] = f"{path.replace('/', '_')}.html"
         elif dirs[-1] == "contents.json":
             dir_path = "/".join(dirs[:-1])
             try:
@@ -85,20 +88,24 @@ for line in tree_data:
             except (json.JSONDecodeError, FileNotFoundError):
                 dir_descriptions[dir_path] = "Invalid or missing contents.json"
 
-# Convert READMEs to HTML using Pandoc
-readme_html = {}
-for readme in readme_files:
-    temp_html = f"temp_{readme.replace('/', '_')}.html"
-    pandoc_cmd = ["pandoc", "-f", "markdown", "-t", "html", readme, "-o", temp_html]
-    run_cmd(pandoc_cmd)
+# Convert Markdown files to HTML
+for md_path, html_file in md_files.items():
+    html_path = os.path.join(repo_dir, html_file)
+    run_cmd(["pandoc", "-f", "markdown", "-t", "html", md_path, "-o", html_path, "--standalone"])
+
+# Convert root README.md to HTML if it exists
+readme_content = ""
+if root_readme:
+    temp_html = "temp_root_readme.html"
+    run_cmd(["pandoc", "-f", "markdown", "-t", "html", root_readme, "-o", temp_html])
     try:
         with open(temp_html, "r", encoding="utf-8") as f:
-            readme_html[readme] = f.read()
+            readme_content = f.read()
         os.remove(temp_html)
     except FileNotFoundError:
-        readme_html[readme] = f"<p>Could not render {readme}</p>"
+        readme_content = "<p>Could not render README.md</p>"
 
-# Generate HTML content with improved styling
+# Generate main HTML content
 html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -137,14 +144,14 @@ html = """
         h2.expanded::before {
             transform: rotate(90deg);
         }
-        .tree {
+        .readme, .tree, .commit-list, .uncommitted {
             margin: 20px 0;
             background-color: #fff;
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .tree.collapsed {
+        .readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {
             display: none;
         }
         .tree ul {
@@ -185,15 +192,12 @@ html = """
             margin-left: 15px;
             font-size: 0.9em;
         }
-        .commit-list, .uncommitted, .readme-section {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin: 20px 0;
+        .tree .md-link {
+            color: #2980b9;
+            text-decoration: none;
         }
-        .commit-list.collapsed, .uncommitted.collapsed {
-            display: none;
+        .tree .md-link:hover {
+            text-decoration: underline;
         }
         .commit {
             padding: 8px 0;
@@ -202,20 +206,29 @@ html = """
         .uncommitted {
             color: #c0392b;
         }
-        .readme-section h3 {
-            color: #2980b9;
-            margin-top: 0;
-        }
     </style>
 </head>
 <body>
     <h1>Repository Viewer</h1>
+"""
 
+# Add README section if root README exists
+if root_readme:
+    html += """
+    <h2>README</h2>
+    <div class="readme collapsed">
+"""
+    html += readme_content
+    html += """
+    </div>
+"""
+
+html += """
     <h2>File Hierarchy</h2>
     <div class="tree collapsed">
 """
 
-# Recursive function to build tree HTML with descriptions
+# Recursive function to build tree HTML with Markdown links
 def build_tree_html(tree, current_path=""):
     html = "<ul>"
     for name, subtree in sorted(tree.items()):
@@ -230,7 +243,14 @@ def build_tree_html(tree, current_path=""):
             html += "</span>"
             html += build_tree_html(subtree, full_path)
         else:
-            html += f"{escape(name)}"
+            if name.lower().endswith(".md"):
+                html_file = md_files.get(full_path, "")
+                if html_file:
+                    html += f'<a href="{html_file}" target="_blank" class="md-link">{escape(name)}</a>'
+                else:
+                    html += f"{escape(name)}"
+            else:
+                html += f"{escape(name)}"
         html += "</li>"
     html += "</ul>"
     return html
@@ -259,11 +279,6 @@ for line in status_data:
 html += """
     </div>
 
-    <h2>README Files</h2>
-"""
-for readme, content in readme_html.items():
-    html += f'<div class="readme-section"><h3>{escape(readme)}</h3>{content}</div>'
-html += """
     <script>
         document.querySelectorAll('.tree .dir').forEach(dir => {
             dir.addEventListener('click', (e) => {
@@ -290,7 +305,7 @@ html += """
 </html>
 """
 
-# Write and open the HTML file
+# Write and open the main HTML file
 with open(output_file, "w", encoding="utf-8") as f:
     f.write(html)
 
