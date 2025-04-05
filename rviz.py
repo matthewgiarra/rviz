@@ -3,6 +3,7 @@ import subprocess
 import os
 import json
 import webbrowser
+import argparse
 from html import escape
 
 # Detect operating system
@@ -11,6 +12,11 @@ is_mac = platform.system() == "Darwin"
 
 # Default config file name
 config_file = "config.json"
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="Generate a repository viewer HTML page.")
+parser.add_argument("-t", "--title", help="Specify the repository title (use single quotes, e.g., 'My Title', if double quotes cause shell issues)")
+args = parser.parse_args()
 
 # Function to load config from JSON
 def load_config():
@@ -36,6 +42,10 @@ def load_config():
 config = load_config()
 repo_dir = config["repo_dir"]
 output_file = os.path.join(repo_dir, config["output_file"])
+
+# Determine repository title
+repo_name = os.path.basename(repo_dir)  # Default: last part of repo_dir path
+repo_title = args.title or config.get("title", repo_name)  # Precedence: args > config > default
 
 # Change to repo directory
 try:
@@ -106,14 +116,14 @@ if root_readme:
         readme_content = "<p>Could not render README.md</p>"
 
 # Generate main HTML content
-html = """
+html = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Repository Viewer</title>
+    <title>{escape(repo_title)}</title>
     <style>
-        body {
+        body {{
             font-family: Arial, sans-serif;
             line-height: 1.6;
             max-width: 1000px;
@@ -121,48 +131,48 @@ html = """
             padding: 20px;
             background-color: #f5f5f5;
             color: #333;
-        }
-        h1 {
+        }}
+        h1 {{
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
-        }
-        h2 {
+        }}
+        h2 {{
             color: #34495e;
             margin-top: 30px;
             cursor: pointer;
             display: flex;
             align-items: center;
-        }
-        h2::before {
+        }}
+        h2::before {{
             content: '▶';
             display: inline-block;
             margin-right: 8px;
             transform: rotate(0deg);
             transition: transform 0.3s ease;
-        }
-        h2.expanded::before {
+        }}
+        h2.expanded::before {{
             transform: rotate(90deg);
-        }
-        .readme, .tree, .commit-list, .uncommitted {
+        }}
+        .readme, .tree, .commit-list, .uncommitted {{
             margin: 20px 0;
             background-color: #fff;
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {
+        }}
+        .readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {{
             display: none;
-        }
-        .tree ul {
+        }}
+        .tree ul {{
             padding-left: 20px;
             list-style: none;
-        }
-        .tree li {
+        }}
+        .tree li {{
             position: relative;
             margin: 10px 0;
-        }
-        .tree .dir {
+        }}
+        .tree .dir {{
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -170,46 +180,46 @@ html = """
             background-color: #ecf0f1;
             border-radius: 5px;
             transition: background-color 0.3s;
-        }
-        .tree .dir:hover {
+        }}
+        .tree .dir:hover {{
             background-color: #dfe6e9;
-        }
-        .tree .dir::before {
+        }}
+        .tree .dir::before {{
             content: '▶';
             display: inline-block;
             margin-right: 8px;
             transition: transform 0.3s ease;
-        }
-        .tree .expanded > .dir::before {
+        }}
+        .tree .expanded > .dir::before {{
             transform: rotate(90deg);
-        }
-        .tree .collapsed > ul {
+        }}
+        .tree .collapsed > ul {{
             display: none;
-        }
-        .tree .description {
+        }}
+        .tree .description {{
             font-style: italic;
             color: #7f8c8d;
             margin-left: 15px;
             font-size: 0.9em;
-        }
-        .tree .md-link {
+        }}
+        .tree .md-link {{
             color: #2980b9;
             text-decoration: none;
-        }
-        .tree .md-link:hover {
+        }}
+        .tree .md-link:hover {{
             text-decoration: underline;
-        }
-        .commit {
+        }}
+        .commit {{
             padding: 8px 0;
             border-bottom: 1px solid #eee;
-        }
-        .uncommitted {
+        }}
+        .uncommitted {{
             color: #c0392b;
-        }
+        }}
     </style>
 </head>
 <body>
-    <h1>Repository Viewer</h1>
+    <h1>{escape(repo_title)}</h1>
 """
 
 # Add README section if root README exists
