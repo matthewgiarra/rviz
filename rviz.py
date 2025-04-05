@@ -124,17 +124,28 @@ html = """
             color: #34495e;
             margin-top: 30px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
         }
         h2::before {
             content: '▶';
+            display: inline-block;
             margin-right: 8px;
-            transition: transform 0.3s;
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
         }
         h2.expanded::before {
             transform: rotate(90deg);
         }
         .tree {
             margin: 20px 0;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tree.collapsed {
+            display: none;
         }
         .tree ul {
             padding-left: 20px;
@@ -160,7 +171,7 @@ html = """
             content: '▶';
             display: inline-block;
             margin-right: 8px;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
         .tree .expanded > .dir::before {
             transform: rotate(90deg);
@@ -174,29 +185,22 @@ html = """
             margin-left: 15px;
             font-size: 0.9em;
         }
-        .commit-list, #uncommitted {
+        .commit-list, .uncommitted, .readme-section {
             background-color: #fff;
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             margin: 20px 0;
         }
-        .commit-list.collapsed {
+        .commit-list.collapsed, .uncommitted.collapsed {
             display: none;
         }
         .commit {
             padding: 8px 0;
             border-bottom: 1px solid #eee;
         }
-        #uncommitted {
+        .uncommitted {
             color: #c0392b;
-        }
-        .readme-section {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin: 20px 0;
         }
         .readme-section h3 {
             color: #2980b9;
@@ -208,7 +212,7 @@ html = """
     <h1>Repository Viewer</h1>
 
     <h2>File Hierarchy</h2>
-    <div class="tree">
+    <div class="tree collapsed">
 """
 
 # Recursive function to build tree HTML with descriptions
@@ -248,7 +252,7 @@ html += """
     </div>
 
     <h2>Uncommitted Changes</h2>
-    <div id="uncommitted">
+    <div class="uncommitted collapsed">
 """
 for line in status_data:
     html += f'<div>{escape(line)}</div>'
