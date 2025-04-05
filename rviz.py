@@ -10,38 +10,44 @@ from html import escape
 is_windows = platform.system() == "Windows"
 is_mac = platform.system() == "Darwin"
 
-# Default config file name
-config_file = "config.json"
+# Default config file name in the script's directory
+default_config_file = "config.json"
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Generate a repository viewer HTML page.")
 parser.add_argument("-t", "--title", help="Specify the repository title (use single quotes, e.g., 'My Title', if double quotes cause shell issues)")
+parser.add_argument("-d", "--dir", help="Specify the repository directory (overrides config.json 'repo_dir')")
+parser.add_argument("-o", "--output", help="Specify the output HTML file name (overrides config.json 'output_file')")
+parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config.json (overrides default config.json in script directory)")
 args = parser.parse_args()
 
+# Determine config file path
+config_file = args.file or default_config_file  # Precedence: command-line > default
+
 # Function to load config from JSON
-def load_config():
+def load_config(config_path):
     default_config = {
         "repo_dir": os.getcwd(),
         "output_file": "repo_view.html"
     }
-    if not os.path.exists(config_file):
-        print(f"Config file '{config_file}' not found. Using defaults: {default_config}")
+    if not os.path.exists(config_path):
+        print(f"Config file '{config_path}' not found. Using defaults: {default_config}")
         return default_config
     try:
-        with open(config_file, "r", encoding="utf-8") as f:
+        with open(config_path, "r", encoding="utf-8") as f:
             config = json.load(f)
         return {**default_config, **config}
     except json.JSONDecodeError as e:
-        print(f"Error parsing '{config_file}': {e}. Using defaults: {default_config}")
+        print(f"Error parsing '{config_path}': {e}. Using defaults: {default_config}")
         return default_config
     except Exception as e:
-        print(f"Error loading '{config_file}': {e}. Using defaults: {default_config}")
+        print(f"Error loading '{config_path}': {e}. Using defaults: {default_config}")
         return default_config
 
 # Load configuration
-config = load_config()
-repo_dir = config["repo_dir"]
-output_file = os.path.join(repo_dir, config["output_file"])
+config = load_config(config_file)
+repo_dir = args.dir or config["repo_dir"]  # Precedence: command-line > config > default
+output_file = os.path.join(repo_dir, args.output or config["output_file"])  # Precedence: command-line > config > default
 
 # Determine repository title
 repo_name = os.path.basename(repo_dir)  # Default: last part of repo_dir path
