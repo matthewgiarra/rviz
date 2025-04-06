@@ -22,7 +22,7 @@
         }
         .timestamp {
             font-size: 0.9em;
-            color: #7f8c8d;  /* Less-emphasized gray */
+            color: #7f8c8d;
             margin-top: 0;
         }
         h2 {
@@ -100,6 +100,32 @@
         .commit {
             padding: 8px 0;
             border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .commit::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+        .commit.expanded::before {
+            transform: rotate(90deg);
+        }
+        .commit-details {
+            margin: 10px 0 0 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+        }
+        .commit.expanded + .commit-details {
+            display: block;
+        }
+        .commit-details ul {
+            padding-left: 20px;
+            margin: 5px 0;
         }
         .uncommitted {
             color: #c0392b;
@@ -108,7 +134,7 @@
 </head>
 <body>
     <h1>rviz</h1>
-    <p class="timestamp">Generated on April 05, 2025 02:49:36 PM</p>
+    <p class="timestamp">Generated on April 05, 2025 10:04:26 PM</p>
 
     <h2>README</h2>
     <div class="readme collapsed">
@@ -231,12 +257,12 @@ used.</li>
 
     <h2>Commit History</h2>
     <div class="commit-list collapsed">
-<div class="commit">2025-04-05: Added timestamp to html file, closes #5 (Matthew Giarra) - 1e0d413</div><div class="commit">2025-04-05: Update README.md (Matthew Giarra) - 4751e04</div><div class="commit">2025-04-05: Update README.md (Matthew Giarra) - 80d344c</div><div class="commit">2025-04-05: Updated example.html (Matthew Giarra) - 527f880</div><div class="commit">2025-04-05: Added link to preview of example.html (Matthew Giarra) - 89b016a</div><div class="commit">2025-04-05: Added example.html (Matthew Giarra) - 9198814</div><div class="commit">2025-04-05: Updated README.md (Matthew Giarra) - 473aae3</div><div class="commit">2025-04-05: Added warning if both rviz.json and rviz.config are in the target dir; changed config.json to rviz.json in the rviz repo (Matthew Giarra) - f71f69a</div><div class="commit">2025-04-05: Added searching for rviz.json in the target repo. (Matthew Giarra) - 73a8157</div><div class="commit">2025-04-05: Added command argument to specify path to config file (Matthew Giarra) - e5ac6a9</div><div class="commit">2025-04-05: Added specifying repo title via config.json, command argument, or (default) repo name. (Matthew Giarra) - 7b0991a</div><div class="commit">2025-04-05: Expandable root README and linked subdir .md files (Matthew Giarra) - 2f02d1a</div><div class="commit">2025-04-05: Big spinny triangles (Matthew Giarra) - 3360584</div><div class="commit">2025-04-05: Initial commit. (Matthew Giarra) - c0e1cec</div>
+<div class="commit">2025-04-05: List all directories before files (within a given subdir); closes #4 (Matthew Giarra) - 20032ef</div><div class="commit-details"><p><strong>Full Hash:</strong> 20032efcf83206ed856b8024a5473db33e89c73d</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 21:48:49 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 21:48:49 -0400</p><p><strong>Stats:</strong> 1 file changed, 33 insertions(+), 20 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Added timestamp to html file, closes #5 (Matthew Giarra) - f6e0a90</div><div class="commit-details"><p><strong>Full Hash:</strong> f6e0a90bd86141781c2bf317c98b3e90e58f16ef</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 14:04:46 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 14:50:57 -0400</p><p><strong>Stats:</strong> 2 files changed, 35 insertions(+), 17 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: example.html</li><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Update README.md (Matthew Giarra) - 4751e04</div><div class="commit-details"><p><strong>Full Hash:</strong> 4751e0410305a3fac4ba00ac1dcbd260c187b959</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 10:33:00 -0400</p><p><strong>Committer:</strong> GitHub &lt;noreply@github.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 10:33:00 -0400</p><p><strong>Stats:</strong> 1 file changed, 1 insertion(+), 1 deletion(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: README.md</li></ul></div><div class="commit">2025-04-05: Update README.md (Matthew Giarra) - 80d344c</div><div class="commit-details"><p><strong>Full Hash:</strong> 80d344cf239d49ddedd133a974990a8b0b6d7900</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 10:32:11 -0400</p><p><strong>Committer:</strong> GitHub &lt;noreply@github.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 10:32:11 -0400</p><p><strong>Stats:</strong> 1 file changed, 1 insertion(+), 1 deletion(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: README.md</li></ul></div><div class="commit">2025-04-05: Updated example.html (Matthew Giarra) - 527f880</div><div class="commit-details"><p><strong>Full Hash:</strong> 527f8809c1ca1be2ccf0f791641eff57b21e1789</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 02:53:55 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 02:53:55 -0400</p><p><strong>Stats:</strong> 2 files changed, 9 insertions(+), 6 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: README.md</li><li>Modified: example.html</li></ul></div><div class="commit">2025-04-05: Added link to preview of example.html (Matthew Giarra) - 89b016a</div><div class="commit-details"><p><strong>Full Hash:</strong> 89b016a8e708eb89b8f5b81a066599cd07f9f999</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 02:50:00 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 02:50:00 -0400</p><p><strong>Stats:</strong> 1 file changed, 2 insertions(+)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: README.md</li></ul></div><div class="commit">2025-04-05: Added example.html (Matthew Giarra) - 9198814</div><div class="commit-details"><p><strong>Full Hash:</strong> 9198814469b923dab6543ace07d1886b452638f1</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 02:41:15 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 02:41:15 -0400</p><p><strong>Stats:</strong> 1 file changed, 255 insertions(+)</p><p><strong>Files Changed:</strong></p><ul><li>Added: example.html</li></ul></div><div class="commit">2025-04-05: Updated README.md (Matthew Giarra) - 473aae3</div><div class="commit-details"><p><strong>Full Hash:</strong> 473aae3b2f59a9fd82d900d48059e9e72d728b18</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 02:38:34 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 02:38:34 -0400</p><p><strong>Stats:</strong> 1 file changed, 83 insertions(+), 132 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: README.md</li></ul></div><div class="commit">2025-04-05: Added warning if both rviz.json and rviz.config are in the target dir; changed config.json to rviz.json in the rviz repo (Matthew Giarra) - f71f69a</div><div class="commit-details"><p><strong>Full Hash:</strong> f71f69ac01d5f1fd95227906a727bd278beb96d8</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 02:32:56 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 02:32:56 -0400</p><p><strong>Stats:</strong> 3 files changed, 16 insertions(+), 11 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Added: rviz.json</li><li>Modified: rviz.py</li><li>Deleted: config.json</li></ul></div><div class="commit">2025-04-05: Added searching for rviz.json in the target repo. (Matthew Giarra) - 73a8157</div><div class="commit-details"><p><strong>Full Hash:</strong> 73a81577bfcaa63f48c348fc5d2b9badb79f00e5</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 02:09:34 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 02:09:34 -0400</p><p><strong>Stats:</strong> 1 file changed, 21 insertions(+), 10 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Added command argument to specify path to config file (Matthew Giarra) - e5ac6a9</div><div class="commit-details"><p><strong>Full Hash:</strong> e5ac6a9e64b32649e77f5692ff99b60d35d7b586</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 01:48:52 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 01:49:19 -0400</p><p><strong>Stats:</strong> 1 file changed, 17 insertions(+), 11 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Added specifying repo title via config.json, command argument, or (default) repo name. (Matthew Giarra) - 7b0991a</div><div class="commit-details"><p><strong>Full Hash:</strong> 7b0991abb6ccd70a1ae08119c32076cc370ebb54</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 01:36:20 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 01:36:20 -0400</p><p><strong>Stats:</strong> 1 file changed, 51 insertions(+), 41 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Expandable root README and linked subdir .md files (Matthew Giarra) - 2f02d1a</div><div class="commit-details"><p><strong>Full Hash:</strong> 2f02d1a2ad99fb765c568b843a5b85db51f1b9e5</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 01:20:15 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 01:20:15 -0400</p><p><strong>Stats:</strong> 1 file changed, 50 insertions(+), 35 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Big spinny triangles (Matthew Giarra) - 3360584</div><div class="commit-details"><p><strong>Full Hash:</strong> 33605847e2a16b3a2263f239e2ab227420dcae38</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 01:07:45 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 01:07:45 -0400</p><p><strong>Stats:</strong> 1 file changed, 18 insertions(+), 14 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit">2025-04-05: Initial commit. (Matthew Giarra) - c0e1cec</div><div class="commit-details"><p><strong>Full Hash:</strong> c0e1cecd9b77cf23566d18fcf1832871f327b580</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 00:56:08 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 00:56:08 -0400</p><p><strong>Stats:</strong> 3 files changed, 437 insertions(+)</p><p><strong>Files Changed:</strong></p><ul><li>Added: README.md</li><li>Added: config.json</li><li>Added: rviz.py</li></ul></div>
     </div>
 
     <h2>Uncommitted Changes</h2>
     <div class="uncommitted collapsed">
-<div>M README.md</div>
+<div>M example.html</div><div> M rviz.py</div>
     </div>
 
     <script>
@@ -258,6 +284,12 @@ used.</li>
                 const section = h2.nextElementSibling;
                 section.classList.toggle('collapsed');
                 h2.classList.toggle('expanded');
+            });
+        });
+        document.querySelectorAll('.commit').forEach(commit => {
+            commit.addEventListener('click', (e) => {
+                commit.classList.toggle('expanded');
+                e.stopPropagation();
             });
         });
     </script>

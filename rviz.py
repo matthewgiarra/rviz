@@ -94,8 +94,50 @@ def run_cmd(cmd_list):
 
 # Gather Git data
 tree_data = run_cmd(["git", "ls-tree", "-r", "HEAD"])
-commit_history = run_cmd(["git", "log", "--pretty=format:%h|%an|%ad|%s", "--date=short"])
+commit_history = run_cmd(["git", "log", "--pretty=format:%h|%an|%ae|%ad|%cn|%ce|%cd|%s", "--date=iso"])  # Updated format
 status_data = run_cmd(["git", "status", "--porcelain"])
+
+# Fetch detailed commit info
+commit_details = {}
+for commit in commit_history:
+    try:
+        hash_short, author_name, author_email, author_date, committer_name, committer_email, commit_date, message = commit.split("|", 7)
+        # Get full hash and change stats
+        full_hash = run_cmd(["git", "rev-parse", hash_short])[0] if run_cmd(["git", "rev-parse", hash_short]) else hash_short
+        stat_lines = run_cmd(["git", "show", hash_short, "--stat", "--oneline"])
+        files_changed = run_cmd(["git", "show", hash_short, "--name-status", "--oneline"])
+        
+        # Parse file changes
+        changes = {"added": [], "modified": [], "deleted": []}
+        for line in files_changed[1:]:  # Skip first line (commit message)
+            if line:
+                status, file = line.split(maxsplit=1)
+                if status.startswith("A"):
+                    changes["added"].append(file)
+                elif status.startswith("M"):
+                    changes["modified"].append(file)
+                elif status.startswith("D"):
+                    changes["deleted"].append(file)
+        
+        # Parse stats (e.g., "2 files changed, 10 insertions(+), 5 deletions(-)")
+        stats = ""
+        for line in stat_lines:
+            if "files changed" in line or "file changed" in line:
+                stats = line.split(hash_short)[-1].strip()
+                break
+        
+        commit_details[hash_short] = {
+            "full_hash": full_hash,
+            "author": f"{author_name} <{author_email}>",
+            "committer": f"{committer_name} <{committer_email}>",
+            "author_date": author_date,
+            "commit_date": commit_date,
+            "message": message,
+            "changes": changes,
+            "stats": stats
+        }
+    except ValueError:
+        continue
 
 # Build file tree and collect directory descriptions and Markdown files
 file_tree = {}
@@ -244,6 +286,32 @@ html = f"""
         .commit {{
             padding: 8px 0;
             border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }}
+        .commit::before {{
+            content: '▶';
+            display: inline-block;
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }}
+        .commit.expanded::before {{
+            transform: rotate(90deg);
+        }}
+        .commit-details {{
+            margin: 10px 0 0 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+        }}
+        .commit.expanded + .commit-details {{
+            display: block;
+        }}
+        .commit-details ul {{
+            padding-left: 20px;
+            margin: 5px 0;
         }}
         .uncommitted {{
             color: #c0392b;
@@ -274,15 +342,12 @@ html += """
 # Recursive function to build tree HTML with directories first, then files
 def build_tree_html(tree, current_path=""):
     html = "<ul>"
-    # Split into directories and files
     dirs = [(name, subtree) for name, subtree in tree.items() if bool(subtree)]
     files = [(name, None) for name, subtree in tree.items() if not bool(subtree)]
     
-    # Sort directories and files separately
     dirs = sorted(dirs, key=lambda x: x[0])
     files = sorted(files, key=lambda x: x[0])
     
-    # Render directories first
     for name, subtree in dirs:
         full_path = f"{current_path}/{name}" if current_path else name
         description = dir_descriptions.get(full_path, "")
@@ -294,7 +359,6 @@ def build_tree_html(tree, current_path=""):
         html += build_tree_html(subtree, full_path)
         html += "</li>"
     
-    # Then render files
     for name, _ in files:
         full_path = f"{current_path}/{name}" if current_path else name
         html += "<li>"
@@ -320,8 +384,26 @@ html += """
 """
 for commit in commit_history:
     try:
-        hash, author, date, message = commit.split("|", 3)
-        html += f'<div class="commit">{date}: {escape(message)} ({escape(author)}) - {hash}</div>'
+        hash_short, author_name, author_email, author_date, committer_name, committer_email, commit_date, message = commit.split("|", 7)
+        details = commit_details.get(hash_short, {})
+        html += f'<div class="commit">{author_date.split()[0]}: {escape(message)} ({escape(author_name)}) - {hash_short}</div>'
+        html += '<div class="commit-details">'
+        html += f'<p><strong>Full Hash:</strong> {escape(details.get("full_hash", hash_short))}</p>'
+        html += f'<p><strong>Author:</strong> {escape(details.get("author", author_name))}</p>'
+        html += f'<p><strong>Authored:</strong> {escape(details.get("author_date", author_date))}</p>'
+        html += f'<p><strong>Committer:</strong> {escape(details.get("committer", committer_name))}</p>'
+        html += f'<p><strong>Committed:</strong> {escape(details.get("commit_date", commit_date))}</p>'
+        html += f'<p><strong>Stats:</strong> {escape(details.get("stats", "No stats available"))}</p>'
+        html += '<p><strong>Files Changed:</strong></p>'
+        html += '<ul>'
+        for file in details.get("changes", {}).get("added", []):
+            html += f'<li>Added: {escape(file)}</li>'
+        for file in details.get("changes", {}).get("modified", []):
+            html += f'<li>Modified: {escape(file)}</li>'
+        for file in details.get("changes", {}).get("deleted", []):
+            html += f'<li>Deleted: {escape(file)}</li>'
+        html += '</ul>'
+        html += '</div>'
     except ValueError:
         html += f'<div class="commit">{escape(commit)}</div>'
 html += """
@@ -354,6 +436,12 @@ html += """
                 const section = h2.nextElementSibling;
                 section.classList.toggle('collapsed');
                 h2.classList.toggle('expanded');
+            });
+        });
+        document.querySelectorAll('.commit').forEach(commit => {
+            commit.addEventListener('click', (e) => {
+                commit.classList.toggle('expanded');
+                e.stopPropagation();
             });
         });
     </script>
