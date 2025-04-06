@@ -5,7 +5,7 @@ import json
 import webbrowser
 import argparse
 from html import escape
-from datetime import datetime  # Added for timestamp
+from datetime import datetime
 
 # Detect operating system
 is_windows = platform.system() == "Windows"
@@ -71,7 +71,7 @@ repo_name = os.path.basename(repo_dir)
 repo_title = args.title or config.get("title", repo_name)
 
 # Get current date and time
-creation_time = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")  # e.g., "April 05, 2025 09:30:00 AM"
+creation_time = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
 
 # Change to repo directory (only once)
 try:
@@ -166,7 +166,7 @@ html = f"""
         }}
         .timestamp {{
             font-size: 0.9em;
-            color: #7f8c8d;  /* Less-emphasized gray */
+            color: #7f8c8d;
             margin-top: 0;
         }}
         h2 {{
@@ -271,30 +271,43 @@ html += """
     <div class="tree collapsed">
 """
 
-# Recursive function to build tree HTML with Markdown links
+# Recursive function to build tree HTML with directories first, then files
 def build_tree_html(tree, current_path=""):
     html = "<ul>"
-    for name, subtree in sorted(tree.items()):
+    # Split into directories and files
+    dirs = [(name, subtree) for name, subtree in tree.items() if bool(subtree)]
+    files = [(name, None) for name, subtree in tree.items() if not bool(subtree)]
+    
+    # Sort directories and files separately
+    dirs = sorted(dirs, key=lambda x: x[0])
+    files = sorted(files, key=lambda x: x[0])
+    
+    # Render directories first
+    for name, subtree in dirs:
         full_path = f"{current_path}/{name}" if current_path else name
-        is_dir = bool(subtree)
-        description = dir_descriptions.get(full_path, "") if is_dir else ""
+        description = dir_descriptions.get(full_path, "")
         html += "<li>"
-        if is_dir:
-            html += f'<span class="dir">{escape(name)}'
-            if description:
-                html += f'<span class="description">{escape(description)}</span>'
-            html += "</span>"
-            html += build_tree_html(subtree, full_path)
-        else:
-            if name.lower().endswith(".md"):
-                html_file = md_files.get(full_path, "")
-                if html_file:
-                    html += f'<a href="{html_file}" target="_blank" class="md-link">{escape(name)}</a>'
-                else:
-                    html += f"{escape(name)}"
+        html += f'<span class="dir">{escape(name)}'
+        if description:
+            html += f'<span class="description">{escape(description)}</span>'
+        html += "</span>"
+        html += build_tree_html(subtree, full_path)
+        html += "</li>"
+    
+    # Then render files
+    for name, _ in files:
+        full_path = f"{current_path}/{name}" if current_path else name
+        html += "<li>"
+        if name.lower().endswith(".md"):
+            html_file = md_files.get(full_path, "")
+            if html_file:
+                html += f'<a href="{html_file}" target="_blank" class="md-link">{escape(name)}</a>'
             else:
                 html += f"{escape(name)}"
+        else:
+            html += f"{escape(name)}"
         html += "</li>"
+    
     html += "</ul>"
     return html
 
