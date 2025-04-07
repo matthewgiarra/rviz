@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; color: #333; }}
+        h1 {{ color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 5px; }}
+        .timestamp {{ font-size: 0.9em; color: #7f8c8d; margin-top: 0; }}
+        h2 {{ color: #34495e; margin-top: 30px; cursor: pointer; display: flex; align-items: center; }}
+        h2::before {{ content: '▶'; display: inline-block; margin-right: 8px; transform: rotate(0deg); transition: transform 0.3s ease; }}
+        h2.expanded::before {{ transform: rotate(90deg); }}
+        .readme, .tree, .commit-list, .uncommitted {{ margin: 20px 0; background-color: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
+        .readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {{ display: none; }}
+        .tree ul {{ padding-left: 20px; list-style: none; }}
+        .tree li {{ position: relative; margin: 10px 0; }}
+        .tree .dir {{ cursor: pointer; display: flex; align-items: center; padding: 8px; background-color: #ecf0f1; border-radius: 5px; transition: background-color 0.3s; }}
+        .tree .dir:hover {{ background-color: #dfe6e9; }}
+        .tree .dir::before {{ content: '▶'; display: inline-block; margin-right: 8px; transition: transform 0.3s ease; }}
+        .tree .expanded > .dir::before {{ transform: rotate(90deg); }}
+        .tree .collapsed > ul {{ display: none; }}
+        .tree .description {{ font-style: italic; color: #7f8c8d; margin-left: 15px; font-size: 0.9em; }}
+        .tree .md-link {{ color: #2980b9; text-decoration: none; }}
+        .tree .md-link:hover {{ text-decoration: underline; }}
+        .commit {{ padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; }}
+        .commit::before {{ content: '▶'; display: inline-block; margin-right: 8px; transition: transform 0.3s ease; }}
+        .commit.expanded::before {{ transform: rotate(90deg); }}
+        .commit-details {{ margin: 10px 0 0 20px; padding: 10px; background-color: #f9f9f9; border-radius: 5px; display: none; }}
+        .commit.expanded + .commit-details {{ display: block; }}
+        .commit-details ul {{ padding-left: 20px; margin: 5px 0; }}
+        .uncommitted {{ color: #c0392b; }}
+    </style>
+</head>
+<body>
+    <h1>{title}</h1>
+    <p class="timestamp">Generated on {timestamp}</p>
+    <h2>README</h2>
+    <div class="readme collapsed">{readme_content}</div>
+    <h2>File Hierarchy</h2>
+    <div class="tree collapsed">{tree_html}</div>
+    <h2>Commit History</h2>
+    <div class="commit-list collapsed">{commit_html}</div>
+    <h2>Uncommitted Changes</h2>
+    <div class="uncommitted collapsed">{status_html}</div>
+    <script>
+        document.querySelectorAll('.tree .dir').forEach(dir => {{
+            dir.addEventListener('click', (e) => {{
+                const li = dir.parentElement;
+                li.classList.toggle('expanded');
+                li.classList.toggle('collapsed');
+                e.stopPropagation();
+            }});
+        }});
+        document.querySelectorAll('.tree li').forEach(li => {{
+            if (li.querySelector('ul')) {{
+                li.classList.add('collapsed');
+            }}
+        }});
+        document.querySelectorAll('h2').forEach(h2 => {{
+            h2.addEventListener('click', () => {{
+                const section = h2.nextElementSibling;
+                section.classList.toggle('collapsed');
+                h2.classList.toggle('expanded');
+            }});
+        }});
+        document.querySelectorAll('.commit').forEach(commit => {{
+            commit.addEventListener('click', (e) => {{
+                commit.classList.toggle('expanded');
+                e.stopPropagation();
+            }});
+        }});
+    </script>
+</body>
+</html>
