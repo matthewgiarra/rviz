@@ -1,0 +1,194 @@
+:root {
+    /* Retro wave colors inspired by Tron and 80s synthwave */
+    --background-color: #0d0d1a; /* Deep dark blue-black */
+    --text-color: #e0e0e0;       /* Light gray for readability */
+    --primary-color: #00ffff;    /* Neon cyan for headers */
+    --secondary-color: #ff00ff;  /* Neon magenta for links and accents */
+    --accent-color: #ff3366;     /* Bright pink-red for emphasis */
+    --container-bg: #1a1a33;     /* Darker blue-gray for containers */
+    --border-color: #00ccff;     /* Glowing cyan for borders */
+    --hover-color: #333366;      /* Slightly lighter blue for hover */
+    --muted-text: #66ccff;       /* Soft cyan for timestamps */
+    --hyperlink-color: #ffff00;       /* Bright yellow for hyperlinks */
+}
+
+/* Monospaced font for that retro terminal feel */
+body {
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    text-shadow: 0 0 5px var(--primary-color); /* Subtle neon glow */
+}
+
+h1 {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--border-color);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    text-transform: uppercase; /* Retro futuristic vibe */
+    font-size: 2em;
+    text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+}
+
+.timestamp {
+    font-size: 0.9em;
+    color: var(--muted-text);
+    margin-top: 0;
+    text-shadow: 0 0 5px var(--muted-text);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-top: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px var(--primary-color);
+}
+
+h2::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
+}
+
+h2.expanded::before {
+    transform: rotate(90deg);
+}
+
+/* Neon-glowing containers */
+.readme, .tree, .commit-list, .uncommitted {
+    margin: 20px 0;
+    background-color: var(--container-bg);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 15px var(--border-color), inset 0 0 5px var(--border-color);
+}
+
+.readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {
+    display: none;
+}
+
+/* File tree with neon highlights */
+.tree ul {
+    padding-left: 20px;
+    list-style: none;
+}
+
+.tree li {
+    position: relative;
+    margin: 10px 0;
+}
+
+.tree .dir {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background-color: var(--container-bg);
+    border-radius: 3px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.tree .dir:hover {
+    background-color: var(--hover-color);
+    box-shadow: 0 0 10px var(--secondary-color);
+}
+
+.tree .dir::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
+}
+
+.tree .expanded > .dir::before {
+    transform: rotate(90deg);
+}
+
+.tree .collapsed > ul {
+    display: none;
+}
+
+.tree .description {
+    font-style: italic;
+    color: var(--muted-text);
+    margin-left: 15px;
+    font-size: 0.9em;
+    text-shadow: 0 0 3px var(--muted-text);
+}
+
+a {
+    color: var(--hyperlink-color);
+    text-decoration: none;
+    text-shadow: 0 0 5px var(--hyperlink-color);
+}
+
+a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 10px var(--hyperlink-color);
+}
+
+/* Commit list with glowing borders */
+.commit {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: text-shadow 0.3s;
+}
+
+.commit:hover {
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+.commit::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
+}
+
+.commit.expanded::before {
+    transform: rotate(90deg);
+}
+
+.commit-details {
+    margin: 10px 0 0 20px;
+    padding: 10px;
+    background-color: #141426; /* Slightly darker for depth */
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px var(--border-color);
+    display: none;
+}
+
+.commit.expanded + .commit-details {
+    display: block;
+}
+
+.commit-details ul {
+    padding-left: 20px;
+    margin: 5px 0;
+}
+
+/* Uncommitted changes with neon pink */
+.uncommitted {
+    color: var(--accent-color);
+    text-shadow: 0 0 5px var(--accent-color);
+}

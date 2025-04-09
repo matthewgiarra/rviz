@@ -12,7 +12,8 @@ def load_config(argv=None, **kwargs):
     parser.add_argument("-o", "--output", help="Specify the output HTML file name")
     parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config file")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
-    
+    parser.add_argument("--theme", help="Specify the theme (e.g., 'dark' or 'light')")  # Added theme argument
+
     args = parser.parse_args(argv or [])
     
     # Merge parsed arguments with kwargs
@@ -22,7 +23,8 @@ def load_config(argv=None, **kwargs):
     default_config_file = "rviz.json"
     default_config = {
         "repo_dir": os.getcwd(),
-        "output_file": "rviz.html"
+        "output_file": "rviz.html",
+        "theme": "light"  # Default theme
     }
 
     initial_repo_dir = config_args.get("dir") or os.getcwd()
@@ -56,10 +58,12 @@ def load_config(argv=None, **kwargs):
     repo_name = os.path.basename(repo_dir)
     repo_title = config_args.get("title") or config.get("title", repo_name)
     verbose = config_args.get("verbose")
+    theme = config_args.get("theme") or config.get("theme", "light")  # Get theme from arguments or config
 
     return {
         "repo_dir": repo_dir,
         "output_file": output_file,
         "repo_title": repo_title,
-        "verbose": verbose
+        "verbose": verbose,
+        "theme": theme  # Include theme in the returned configuration
     }

@@ -3,6 +3,7 @@ import json
 from html import escape
 from datetime import datetime
 from .utils import run_cmd
+import pdb
 
 def build_file_tree(tree_data, verbose=False):
     """Build file tree and collect Markdown files and descriptions."""
@@ -116,8 +117,21 @@ def generate_commit_html(commit_history, commit_details):
             commit_html += f'<div class="commit">{escape(commit)}</div>'
     return commit_html
 
-def generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, commit_details, verbose=False):
+def load_theme(theme_name):
+    """Load the theme JSON file."""
+    theme_path = os.path.join(os.path.dirname(__file__), "themes", f"{theme_name}.css")
+    if not os.path.exists(theme_path):
+        raise FileNotFoundError(f"Theme '{theme_name}' not found in the themes directory.")
+    with open(theme_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+def generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, commit_details, theme="light", verbose=False):
     """Generate the full HTML page."""
+    
+    # Load the CSS theme
+    themeData = load_theme(theme)
+
+    # Load the HTML template        
     with open(os.path.join(os.path.dirname(__file__), "templates/main.html"), "r", encoding="utf-8") as f:
         template = f.read()
     
@@ -127,8 +141,9 @@ def generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, 
     tree_html = generate_tree_html(file_tree, md_files, dir_descriptions)
     commit_html = generate_commit_html(commit_history, commit_details)
     status_html = "".join(f'<div>{escape(line)}</div>' for line in status_data)
-    
+    # pdb.set_trace()
     return template.format(
+        style_template=themeData,
         title=escape(repo_title),
         timestamp=creation_time,
         readme_content=readme_content if root_readme else "",

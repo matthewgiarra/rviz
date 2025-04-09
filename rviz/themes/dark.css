@@ -1,0 +1,163 @@
+:root {
+    /* Dark theme colors */
+    --background-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --primary-color: #4dabf7;
+    --secondary-color: #339af0;
+    --accent-color: #ff6b6b;
+    --container-bg: #2d2d2d;
+    --border-color: #404040;
+    --hover-color: #3d3d3d;
+    --muted-text: #a0a0a0;
+    --hyperlink-color: #ffff00;  /* Bright yellow for hyperlinks */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+h1 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.timestamp {
+    font-size: 0.9em;
+    color: var(--muted-text);
+    margin-top: 0;
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-top: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+h2::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
+
+h2.expanded::before {
+    transform: rotate(90deg);
+}
+
+.readme, .tree, .commit-list, .uncommitted {
+    margin: 20px 0;
+    background-color: var(--container-bg);
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {
+    display: none;
+}
+
+.tree ul {
+    padding-left: 20px;
+    list-style: none;
+}
+
+.tree li {
+    position: relative;
+    margin: 10px 0;
+}
+
+.tree .dir {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background-color: var(--container-bg);
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.tree .dir:hover {
+    background-color: var(--hover-color);
+}
+
+.tree .dir::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+
+.tree .expanded > .dir::before {
+    transform: rotate(90deg);
+}
+
+.tree .collapsed > ul {
+    display: none;
+}
+
+.tree .description {
+    font-style: italic;
+    color: var(--muted-text);
+    margin-left: 15px;
+    font-size: 0.9em;
+}
+
+a {
+    color: var(--hyperlink-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.commit {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.commit::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+
+.commit.expanded::before {
+    transform: rotate(90deg);
+}
+
+.commit-details {
+    margin: 10px 0 0 20px;
+    padding: 10px;
+    background-color: #252525;
+    border-radius: 5px;
+    display: none;
+}
+
+.commit.expanded + .commit-details {
+    display: block;
+}
+
+.commit-details ul {
+    padding-left: 20px;
+    margin: 5px 0;
+}
+
+.uncommitted {
+    color: var(--accent-color);
+}

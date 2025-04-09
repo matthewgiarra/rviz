@@ -14,6 +14,7 @@ def run(argv=None, **kwargs):
     output_file = config.get("output_file")
     repo_title = config.get("repo_title")
     verbose = config.get("verbose")
+    theme = config.get("theme")
 
     # Gather git data
     if verbose: print("Gathering git data...")
@@ -21,7 +22,7 @@ def run(argv=None, **kwargs):
 
     # Generate HTML
     if verbose: print("Generating HTML...")
-    html = generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, commit_details, verbose=verbose)
+    html = generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, commit_details, verbose=verbose, theme=theme)
 
     # Write HTML to file
     if verbose: print("Writing %s" % output_file)
