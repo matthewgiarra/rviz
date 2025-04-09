@@ -2,8 +2,9 @@ import os
 import json
 from html import escape
 from datetime import datetime
+from .utils import run_cmd
 
-def build_file_tree(tree_data):
+def build_file_tree(tree_data, verbose=False):
     """Build file tree and collect Markdown files and descriptions."""
     file_tree = {}
     md_files = {}
@@ -32,17 +33,16 @@ def build_file_tree(tree_data):
                     dir_descriptions[dir_path] = "Invalid or missing contents.json"
     return file_tree, md_files, dir_descriptions, root_readme
 
-def convert_markdown(repo_dir, md_files, root_readme):
+def convert_markdown(repo_dir, md_files, root_readme, verbose=False):
     """Convert Markdown files to HTML."""
-    from .git_utils import run_cmd
     for md_path, html_file in md_files.items():
         html_path = os.path.join(repo_dir, html_file)
-        run_cmd(["pandoc", "-f", "markdown", "-t", "html", md_path, "-o", html_path, "--standalone"])
+        run_cmd(["pandoc", "-f", "markdown", "-t", "html", md_path, "-o", html_path, "--standalone"], verbose=verbose)
     
     readme_content = ""
     if root_readme:
         temp_html = "temp_root_readme.html"
-        run_cmd(["pandoc", "-f", "markdown", "-t", "html", root_readme, "-o", temp_html])
+        run_cmd(["pandoc", "-f", "markdown", "-t", "html", root_readme, "-o", temp_html], verbose=verbose)
         try:
             with open(temp_html, "r", encoding="utf-8") as f:
                 readme_content = f.read()
@@ -116,14 +116,14 @@ def generate_commit_html(commit_history, commit_details):
             commit_html += f'<div class="commit">{escape(commit)}</div>'
     return commit_html
 
-def generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, commit_details):
+def generate_html(repo_dir, repo_title, tree_data, commit_history, status_data, commit_details, verbose=False):
     """Generate the full HTML page."""
     with open(os.path.join(os.path.dirname(__file__), "templates/main.html"), "r", encoding="utf-8") as f:
         template = f.read()
     
     creation_time = datetime.now().strftime("%B %d, %Y %I:%M:%S %p")
     file_tree, md_files, dir_descriptions, root_readme = build_file_tree(tree_data)
-    readme_content = convert_markdown(repo_dir, md_files, root_readme)
+    readme_content = convert_markdown(repo_dir, md_files, root_readme, verbose=verbose)
     tree_html = generate_tree_html(file_tree, md_files, dir_descriptions)
     commit_html = generate_commit_html(commit_history, commit_details)
     status_html = "".join(f'<div>{escape(line)}</div>' for line in status_data)

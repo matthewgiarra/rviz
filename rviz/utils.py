@@ -1,6 +1,7 @@
-import sys
 import subprocess
-import rviz
+import platform
+
+is_windows = platform.system() == "Windows"
 
 def run_cmd(cmd_list, verbose=False):
     """Run a shell command and return its output."""
@@ -14,7 +15,3 @@ def run_cmd(cmd_list, verbose=False):
     except Exception as e:
         print(f"Error running '{' '.join(cmd_list)}': {e}")
         return []
-
-if __name__ == "__main__":
-    # Pass raw command-line arguments to rviz.run
-    rviz.run(argv=sys.argv[1:])

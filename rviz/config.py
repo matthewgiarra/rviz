@@ -3,14 +3,21 @@ import json
 import argparse
 from datetime import datetime
 
-def load_config(args):
+def load_config(argv=None, **kwargs):
     """Load and process configuration with precedence."""
+    # Parse command-line arguments if argv is provided
     parser = argparse.ArgumentParser(description="Generate a repository viewer HTML page.")
     parser.add_argument("-t", "--title", help="Specify the repository title")
     parser.add_argument("-d", "--dir", help="Specify the repository directory")
     parser.add_argument("-o", "--output", help="Specify the output HTML file name")
     parser.add_argument("-f", "--file", "-c", "--config", help="Specify the path to config file")
-    args = parser.parse_args(args)
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+    
+    args = parser.parse_args(argv or [])
+    
+    # Merge parsed arguments with kwargs
+    config_args = vars(args)
+    config_args.update(kwargs)
 
     default_config_file = "rviz.json"
     default_config = {
@@ -18,12 +25,12 @@ def load_config(args):
         "output_file": "rviz.html"
     }
 
-    initial_repo_dir = args.dir or os.getcwd()
+    initial_repo_dir = config_args.get("dir") or os.getcwd()
     rviz_json_path = os.path.join(initial_repo_dir, "rviz.json")
     rviz_config_path = os.path.join(initial_repo_dir, "rviz.config")
 
-    if args.file:
-        config_file = args.file
+    if config_args.get("file"):
+        config_file = config_args["file"]
     elif os.path.exists(rviz_config_path):
         config_file = rviz_config_path
         if os.path.exists(rviz_json_path):
@@ -44,15 +51,15 @@ def load_config(args):
             print(f"Error loading '{config_file}': {e}. Using defaults: {default_config}")
             config = default_config
 
-    repo_dir = args.dir or config["repo_dir"]
-    output_file = os.path.join(repo_dir, args.output or config["output_file"])
+    repo_dir = config_args.get("dir") or config["repo_dir"]
+    output_file = os.path.join(repo_dir, config_args.get("output") or config["output_file"])
     repo_name = os.path.basename(repo_dir)
-    repo_title = args.title or config.get("title", repo_name)
+    repo_title = config_args.get("title") or config.get("title", repo_name)
+    verbose = config_args.get("verbose")
 
-    try:
-        os.chdir(repo_dir)
-    except Exception as e:
-        print(f"Error: Cannot access repository directory '{repo_dir}': {e}")
-        exit(1)
-
-    return repo_dir, output_file, repo_title, False  # file_details_enabled not used here
+    return {
+        "repo_dir": repo_dir,
+        "output_file": output_file,
+        "repo_title": repo_title,
+        "verbose": verbose
+    }
