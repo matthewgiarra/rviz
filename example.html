@@ -5,39 +5,46 @@
     <title>rviz</title>
     <style>
        :root {
-    /* Light theme colors */
-    --background-color: #f5f5f5;
-    --text-color: #333333;
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --container-bg: #ffffff;
-    --border-color: #e0e0e0;
-    --hover-color: #f0f0f0;
-    --muted-text: #666666;
+    /* Retro wave colors inspired by Tron and 80s synthwave */
+    --background-color: #0d0d1a; /* Deep dark blue-black */
+    --text-color: #e0e0e0;       /* Light gray for readability */
+    --primary-color: #00ffff;    /* Neon cyan for headers */
+    --secondary-color: #ff00ff;  /* Neon magenta for links and accents */
+    --accent-color: #ff3366;     /* Bright pink-red for emphasis */
+    --container-bg: #1a1a33;     /* Darker blue-gray for containers */
+    --border-color: #00ccff;     /* Glowing cyan for borders */
+    --hover-color: #333366;      /* Slightly lighter blue for hover */
+    --muted-text: #66ccff;       /* Soft cyan for timestamps */
+    --hyperlink-color: #ffff00;       /* Bright yellow for hyperlinks */
 }
 
+/* Monospaced font for that retro terminal feel */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
     line-height: 1.6;
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
     background-color: var(--background-color);
     color: var(--text-color);
+    text-shadow: 0 0 5px var(--primary-color); /* Subtle neon glow */
 }
 
 h1 {
     color: var(--primary-color);
-    border-bottom: 2px solid var(--secondary-color);
+    border-bottom: 3px solid var(--border-color);
     padding-bottom: 5px;
     margin-bottom: 5px;
+    text-transform: uppercase; /* Retro futuristic vibe */
+    font-size: 2em;
+    text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
 }
 
 .timestamp {
     font-size: 0.9em;
     color: var(--muted-text);
     margin-top: 0;
+    text-shadow: 0 0 5px var(--muted-text);
 }
 
 h2 {
@@ -46,6 +53,8 @@ h2 {
     cursor: pointer;
     display: flex;
     align-items: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px var(--primary-color);
 }
 
 h2::before {
@@ -54,24 +63,29 @@ h2::before {
     margin-right: 8px;
     transform: rotate(0deg);
     transition: transform 0.3s ease;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 h2.expanded::before {
     transform: rotate(90deg);
 }
 
+/* Neon-glowing containers */
 .readme, .tree, .commit-list, .uncommitted {
     margin: 20px 0;
     background-color: var(--container-bg);
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 15px var(--border-color), inset 0 0 5px var(--border-color);
 }
 
 .readme.collapsed, .tree.collapsed, .commit-list.collapsed, .uncommitted.collapsed {
     display: none;
 }
 
+/* File tree with neon highlights */
 .tree ul {
     padding-left: 20px;
     list-style: none;
@@ -88,12 +102,13 @@ h2.expanded::before {
     align-items: center;
     padding: 8px;
     background-color: var(--container-bg);
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    border-radius: 3px;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .tree .dir:hover {
     background-color: var(--hover-color);
+    box-shadow: 0 0 10px var(--secondary-color);
 }
 
 .tree .dir::before {
@@ -101,6 +116,8 @@ h2.expanded::before {
     display: inline-block;
     margin-right: 8px;
     transition: transform 0.3s ease;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 .tree .expanded > .dir::before {
@@ -116,23 +133,32 @@ h2.expanded::before {
     color: var(--muted-text);
     margin-left: 15px;
     font-size: 0.9em;
+    text-shadow: 0 0 3px var(--muted-text);
 }
 
-.tree .md-link {
-    color: var(--secondary-color);
+a {
+    color: var(--hyperlink-color);
     text-decoration: none;
+    text-shadow: 0 0 5px var(--hyperlink-color);
 }
 
-.tree .md-link:hover {
+a:hover {
     text-decoration: underline;
+    text-shadow: 0 0 10px var(--hyperlink-color);
 }
 
+/* Commit list with glowing borders */
 .commit {
     padding: 8px 0;
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     display: flex;
     align-items: center;
+    transition: text-shadow 0.3s;
+}
+
+.commit:hover {
+    text-shadow: 0 0 10px var(--primary-color);
 }
 
 .commit::before {
@@ -140,6 +166,8 @@ h2.expanded::before {
     display: inline-block;
     margin-right: 8px;
     transition: transform 0.3s ease;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 .commit.expanded::before {
@@ -149,8 +177,10 @@ h2.expanded::before {
 .commit-details {
     margin: 10px 0 0 20px;
     padding: 10px;
-    background-color: #fafafa;
-    border-radius: 5px;
+    background-color: #141426; /* Slightly darker for depth */
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px var(--border-color);
     display: none;
 }
 
@@ -163,14 +193,16 @@ h2.expanded::before {
     margin: 5px 0;
 }
 
+/* Uncommitted changes with neon pink */
 .uncommitted {
     color: var(--accent-color);
+    text-shadow: 0 0 5px var(--accent-color);
 }
     </style>
 </head>
 <body>
     <h1>rviz</h1>
-    <p class="timestamp">Generated on April 09, 2025 02:24:24 AM</p>
+    <p class="timestamp">Generated on April 09, 2025 02:29:51 AM</p>
     <h2>README</h2>
     <div class="readme collapsed"><h1 id="rviz---repository-visualization-tool">rviz - Repository
 Visualization Tool</h1>
@@ -216,6 +248,9 @@ file name (overrides config <code>output_file</code>).</li>
 config file path (overrides
 <code>rviz.json</code>/<code>rviz.config</code> in target dir and
 default <code>rviz.json</code>).</li>
+<li><code>-v, --verbose</code>: Verbose output</li>
+<li><code>--theme</code>: Format theme of output HTML file (light, dark,
+retro)</li>
 </ul>
 <h1 id="config-file-precedence">Config File Precedence</h1>
 <p>rviz supports configuration via JSON files, with the following
@@ -288,13 +323,17 @@ used.</li>
     <li><span class="dir">templates</span><ul>
     
     <li>commit_entry.html</li><li>file_tree.html</li><li>main.html</li>
+</ul></li><li><span class="dir">themes</span><ul>
+    
+    <li>dark.css</li><li>light.css</li><li>retro.css</li>
 </ul></li>
     <li>__init__.py</li><li>config.py</li><li>git_parser.py</li><li>html_generator.py</li><li>utils.py</li>
 </ul></li>
     <li>.gitignore</li><li>README.md</li><li>__main__.py</li><li>example.html</li><li>rviz.json</li>
 </ul></div>
     <h2>Change History</h2>
-    <div class="commit-list collapsed"><div class="commit" id="commit-e8b317b">2025-04-08: Added verbose output; closes #11 (Matthew Giarra) - e8b317b</div>
+    <div class="commit-list collapsed"><div class="commit" id="commit-1ab9d90">2025-04-09: Added themes (light, dark, retro); closes #3 (Matthew Giarra) - 1ab9d90</div>
+<div class="commit-details"><p><strong>Full Hash:</strong> 1ab9d9042c91e941dd8eb30a8d4276b339df7302</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-09 02:27:09 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-09 02:27:09 -0400</p><p><strong>Stats:</strong> 8 files changed, 744 insertions(+), 178 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Added: rviz/themes/dark.css</li><li>Added: rviz/themes/light.css</li><li>Added: rviz/themes/retro.css</li><li>Modified: example.html</li><li>Modified: rviz/__init__.py</li><li>Modified: rviz/config.py</li><li>Modified: rviz/html_generator.py</li><li>Modified: rviz/templates/main.html</li></ul></div><div class="commit" id="commit-e8b317b">2025-04-08: Added verbose output; closes #11 (Matthew Giarra) - e8b317b</div>
 <div class="commit-details"><p><strong>Full Hash:</strong> e8b317bc11a3ed0ae9d844b5fdc96d8a6a815ec3</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-08 23:22:29 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-08 23:25:16 -0400</p><p><strong>Stats:</strong> 6 files changed, 108 insertions(+), 48 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Added: rviz/utils.py</li><li>Modified: __main__.py</li><li>Modified: rviz/__init__.py</li><li>Modified: rviz/config.py</li><li>Modified: rviz/html_generator.py</li></ul></div><div class="commit" id="commit-580dd48">2025-04-07: Changed commit history to change history; closes #7 (Matthew Giarra) - 580dd48</div>
 <div class="commit-details"><p><strong>Full Hash:</strong> 580dd481c08762c84ecd42227bff95b3a356062b</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-07 00:30:06 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-07 00:30:06 -0400</p><p><strong>Stats:</strong> 1 file changed, 1 insertion(+), 1 deletion(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz/templates/main.html</li></ul></div><div class="commit" id="commit-82cab44">2025-04-06: Split up files; closes #2 (Matthew Giarra) - 82cab44</div>
 <div class="commit-details"><p><strong>Full Hash:</strong> 82cab4474ce83752d0acd494fd724386ee9fb182</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-06 23:24:44 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-06 23:24:44 -0400</p><p><strong>Stats:</strong> 10 files changed, 361 insertions(+), 456 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Added: .gitignore</li><li>Added: __main__.py</li><li>Added: rviz/__init__.py</li><li>Added: rviz/config.py</li><li>Added: rviz/git_utils.py</li><li>Added: rviz/html_generator.py</li><li>Added: rviz/templates/commit_entry.html</li><li>Added: rviz/templates/file_tree.html</li><li>Added: rviz/templates/main.html</li><li>Deleted: rviz.py</li></ul></div><div class="commit" id="commit-452566b">2025-04-05: Added expandable commit entries. Closes #9 (Matthew Giarra) - 452566b</div>
@@ -315,7 +354,7 @@ used.</li>
 <div class="commit-details"><p><strong>Full Hash:</strong> 33605847e2a16b3a2263f239e2ab227420dcae38</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 01:07:45 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 01:07:45 -0400</p><p><strong>Stats:</strong> 1 file changed, 18 insertions(+), 14 deletions(-)</p><p><strong>Files Changed:</strong></p><ul><li>Modified: rviz.py</li></ul></div><div class="commit" id="commit-c0e1cec">2025-04-05: Initial commit. (Matthew Giarra) - c0e1cec</div>
 <div class="commit-details"><p><strong>Full Hash:</strong> c0e1cecd9b77cf23566d18fcf1832871f327b580</p><p><strong>Author:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Authored:</strong> 2025-04-05 00:56:08 -0400</p><p><strong>Committer:</strong> Matthew Giarra &lt;matthew.giarra@gmail.com&gt;</p><p><strong>Committed:</strong> 2025-04-05 00:56:08 -0400</p><p><strong>Stats:</strong> 3 files changed, 437 insertions(+)</p><p><strong>Files Changed:</strong></p><ul><li>Added: README.md</li><li>Added: config.json</li><li>Added: rviz.py</li></ul></div></div>
     <h2>Uncommitted Changes</h2>
-    <div class="uncommitted collapsed"><div>M example.html</div><div> M rviz/__init__.py</div><div> M rviz/config.py</div><div> M rviz/html_generator.py</div><div> M rviz/templates/main.html</div><div>?? darktry.html</div><div>?? out.html</div><div>?? rviz/themes/</div></div>
+    <div class="uncommitted collapsed"><div>M README.md</div></div>
     <script>
         document.querySelectorAll('.tree .dir').forEach(dir => {
             dir.addEventListener('click', (e) => {

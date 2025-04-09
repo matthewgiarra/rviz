@@ -27,6 +27,8 @@ python3 rviz.py [options]
 - `-d, --dir <path>`: Specify the target repository directory (overrides config `repo_dir`).
 - `-o, --output <filename>`: Specify the output HTML file name (overrides config `output_file`).
 - `-f, --file, -c, --config <path>`: Specify a custom config file path (overrides `rviz.json`/`rviz.config` in target dir and default `rviz.json`).
+- `-v, --verbose`: Verbose output
+- `--theme`: Format theme of output HTML file (light, dark, retro)
 
 # Config File Precedence
 
