@@ -1,6 +1,6 @@
 # rviz - Repository Visualization Tool
 
-rviz is a Python script that generates an HTML visualization of a Git repository's structure, commit history, and uncommitted changes. It supports rendering Markdown files as clickable links and embeds the root-level `README.md` in an expandable section.
+rviz is a Python script that generates an HTML visualization (in a browser window) of a git repository's structure, commit history, and uncommitted changes. It supports rendering Markdown files as clickable links and embeds the root-level `README.md` in an expandable section. The intended use case is to enable version control insight on resource-limited systems, e.g., non-internet-connected computers with only basic applications.
 
 [Example output](https://htmlpreview.github.io/?https://raw.githubusercontent.com/matthewgiarra/rviz/main/example.html)
 
